@@ -7,7 +7,7 @@ load_dotenv()
 
 class Settings(BaseSettings):
     # Database Configuration
-    database_url: str = os.getenv("DATABASE_URL", "postgresql://postgres:nUjgMltVbvvOCbKQJzKqckIWWqlOmyNW@postgres.railway.internal:5432/railway")
+    database_url: str = os.getenv("DATABASE_URL", "postgresql://postgres:nUjgMltVbvvOCbKQJzKqckIWWqlOmyNW@switchback.proxy.rlwy.net:55806/railway")
     database_url_test: str = os.getenv("DATABASE_URL_TEST", "postgresql://username:password@localhost:5432/socialboost_pro_test")
     
     # JWT Configuration

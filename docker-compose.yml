@@ -20,7 +20,7 @@ services:
   api:
     build: .
     environment:
-      DATABASE_URL: postgresql://postgres:nUjgMltVbvvOCbKQJzKqckIWWqlOmyNW@postgres.railway.internal:5432/railway
+      DATABASE_URL: postgresql://postgres:nUjgMltVbvvOCbKQJzKqckIWWqlOmyNW@switchback.proxy.rlwy.net:55806/railway
       SECRET_KEY: jgMltVbvvOCbKQJzKqckIWWqlOmyNW
       DEBUG: "true"
     ports:
