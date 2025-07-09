@@ -7,11 +7,11 @@ load_dotenv()
 
 class Settings(BaseSettings):
     # Database Configuration
-    database_url: str = os.getenv("DATABASE_URL", "postgresql://username:password@localhost:5432/socialboost_pro")
+    database_url: str = os.getenv("DATABASE_URL", "postgresql://postgres:nUjgMltVbvvOCbKQJzKqckIWWqlOmyNW@postgres.railway.internal:5432/railway")
     database_url_test: str = os.getenv("DATABASE_URL_TEST", "postgresql://username:password@localhost:5432/socialboost_pro_test")
     
     # JWT Configuration
-    secret_key: str = os.getenv("SECRET_KEY", "your-super-secret-key-change-in-production")
+    secret_key: str = os.getenv("SECRET_KEY", "jgMltVbvvOCbKQJzKqckIWWqlOmyNW")
     algorithm: str = os.getenv("ALGORITHM", "HS256")
     access_token_expire_minutes: int = int(os.getenv("ACCESS_TOKEN_EXPIRE_MINUTES", "30"))
     
