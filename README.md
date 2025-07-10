@@ -72,6 +72,8 @@ Une fois l'application lancée, vous pouvez accéder à :
 
 - **Swagger UI** : `http://localhost:8000/docs`
 - **ReDoc** : `http://localhost:8000/redoc`
+- **Interface Admin** : `http://localhost:8000/admin`
+- **Dashboard Admin** : `http://localhost:8000/admin/dashboard`
 
 ## 🔐 Authentification Admin
 
@@ -79,7 +81,14 @@ L'admin par défaut est créé automatiquement :
 - **Email** : `admin@socialboostpro.com`
 - **Mot de passe** : `admin123`
 
-Pour vous connecter :
+### Interface Admin Web
+Pour accéder à l'interface d'administration complète :
+1. Aller sur `http://localhost:8000/admin`
+2. Se connecter avec les credentials admin
+3. Explorer le dashboard et les différentes sections
+
+### API REST
+Pour utiliser l'API REST :
 1. Aller sur `http://localhost:8000/docs`
 2. Cliquer sur "Authorize" en haut à droite
 3. Utiliser l'endpoint `/admin/login` avec les credentials

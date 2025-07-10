@@ -1,0 +1,246 @@
+{% extends "admin/base.html" %}
+
+{% block title %}Statistiques - SocialBoost Pro{% endblock %}
+
+{% block page_title %}Statistiques détaillées{% endblock %}
+
+{% block content %}
+<div class="row row-deck row-cards">
+    <!-- Statistiques temporelles -->
+    <div class="col-lg-4">
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">Commandes</h3>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-4">
+                        <div class="text-center">
+                            <div class="h1 mb-0">{{ orders_today }}</div>
+                            <div class="text-muted">Aujourd'hui</div>
+                        </div>
+                    </div>
+                    <div class="col-4">
+                        <div class="text-center">
+                            <div class="h1 mb-0">{{ orders_week }}</div>
+                            <div class="text-muted">Cette semaine</div>
+                        </div>
+                    </div>
+                    <div class="col-4">
+                        <div class="text-center">
+                            <div class="h1 mb-0">{{ orders_month }}</div>
+                            <div class="text-muted">Ce mois</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-lg-4">
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">Chiffre d'affaires</h3>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-4">
+                        <div class="text-center">
+                            <div class="h1 mb-0">{{ "%.0f"|format(revenue_today) }}€</div>
+                            <div class="text-muted">Aujourd'hui</div>
+                        </div>
+                    </div>
+                    <div class="col-4">
+                        <div class="text-center">
+                            <div class="h1 mb-0">{{ "%.0f"|format(revenue_week) }}€</div>
+                            <div class="text-muted">Cette semaine</div>
+                        </div>
+                    </div>
+                    <div class="col-4">
+                        <div class="text-center">
+                            <div class="h1 mb-0">{{ "%.0f"|format(revenue_month) }}€</div>
+                            <div class="text-muted">Ce mois</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-lg-4">
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">Performance</h3>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-6">
+                        <div class="text-center">
+                            <div class="h1 mb-0 text-green">98%</div>
+                            <div class="text-muted">Taux de réussite</div>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="text-center">
+                            <div class="h1 mb-0 text-blue">2.5h</div>
+                            <div class="text-muted">Temps de réponse</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Statistiques par plateforme -->
+    <div class="col-lg-6">
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">Performance par plateforme</h3>
+            </div>
+            <div class="table-responsive">
+                <table class="table card-table table-vcenter text-nowrap">
+                    <thead>
+                        <tr>
+                            <th>Plateforme</th>
+                            <th>Commandes</th>
+                            <th>CA Total</th>
+                            <th>Panier moyen</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for stat in platform_stats %}
+                        <tr>
+                            <td>{{ stat.name }}</td>
+                            <td>{{ stat.orders_count }}</td>
+                            <td>{{ "%.2f"|format(stat.total_revenue or 0) }} €</td>
+                            <td>{{ "%.2f"|format(stat.avg_order_value or 0) }} €</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Statistiques par service -->
+    <div class="col-lg-6">
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">Performance par service</h3>
+            </div>
+            <div class="table-responsive">
+                <table class="table card-table table-vcenter text-nowrap">
+                    <thead>
+                        <tr>
+                            <th>Service</th>
+                            <th>Commandes</th>
+                            <th>CA Total</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for stat in service_stats %}
+                        <tr>
+                            <td>{{ stat.name }}</td>
+                            <td>{{ stat.orders_count }}</td>
+                            <td>{{ "%.2f"|format(stat.total_revenue or 0) }} €</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Graphiques avancés -->
+    <div class="col-lg-8">
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">Évolution des commandes</h3>
+            </div>
+            <div class="card-body">
+                <div id="chart-evolution" style="height: 300px"></div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-lg-4">
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">Répartition des statuts</h3>
+            </div>
+            <div class="card-body">
+                <div id="chart-status" style="height: 300px"></div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+<script>
+// Graphique d'évolution
+var optionsEvolution = {
+    series: [{
+        name: 'Commandes',
+        data: [30, 40, 35, 50, 49, 60, 70, 91, 125]
+    }, {
+        name: 'Revenus',
+        data: [1000, 1200, 1100, 1500, 1400, 1800, 2000, 2500, 3000]
+    }],
+    chart: {
+        height: 300,
+        type: 'line',
+        zoom: {
+            enabled: false
+        }
+    },
+    dataLabels: {
+        enabled: false
+    },
+    stroke: {
+        curve: 'straight'
+    },
+    title: {
+        text: 'Évolution mensuelle',
+        align: 'left'
+    },
+    grid: {
+        row: {
+            colors: ['#f3f3f3', 'transparent'],
+            opacity: 0.5
+        },
+    },
+    xaxis: {
+        categories: ['Jan', 'Fév', 'Mar', 'Avr', 'Mai', 'Juin', 'Juil', 'Août', 'Sep'],
+    }
+};
+
+var chartEvolution = new ApexCharts(document.querySelector("#chart-evolution"), optionsEvolution);
+chartEvolution.render();
+
+// Graphique des statuts
+var optionsStatus = {
+    series: [44, 55, 13, 43],
+    chart: {
+        width: 380,
+        type: 'pie',
+    },
+    labels: ['Terminées', 'En cours', 'En attente', 'Échouées'],
+    responsive: [{
+        breakpoint: 480,
+        options: {
+            chart: {
+                width: 200
+            },
+            legend: {
+                position: 'bottom'
+            }
+        }
+    }]
+};
+
+var chartStatus = new ApexCharts(document.querySelector("#chart-status"), optionsStatus);
+chartStatus.render();
+</script>
+{% endblock %} 
