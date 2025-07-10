@@ -26,7 +26,7 @@ class CustomLoginProvider(UsernamePasswordProvider):
 # ✅ Fonction async d'initialisation de l'app
 async def create_app():
     # Connexion Redis
-    redis1 = aioredis.from_url(os.getenv("REDIS_URL", "redis://localhost:6379"), decode_responses=True)
+    redis1 = aioredis.from_url(os.getenv("REDIS_URL", "redis://localhost:6379/0"), decode_responses=True)
 
     # Configuration FastAPI Admin
     await admin_app.configure(
