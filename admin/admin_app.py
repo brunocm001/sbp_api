@@ -17,51 +17,64 @@ file_upload = FileUpload(uploads_dir="static/uploads")
 # Provider d'authentification personnalisé
 class CustomLoginProvider(UsernamePasswordProvider):
     async def authenticate(self, username: str, password: str) -> Optional[AbstractAdmin]:
+        """Authentification personnalisée avec nos modèles Admin"""
         async with AsyncSession(engine) as session:
             admin = await session.get(Admin, username)
             if admin and verify_password(password, admin.password_hash):
                 return admin
         return None
+    
+# Crée une connexion Redis
+redis1 = aioredis.from_url(os.getenv("REDIS_URL", "redis://localhost:6379/0"), decode_responses=True)
 
-# ✅ Fonction async d'initialisation de l'app
-async def create_app():
-    # Connexion Redis
-    redis1 = aioredis.from_url(os.getenv("REDIS_URL", "redis://localhost:6379/0"), decode_responses=True)
 
-    # Configuration FastAPI Admin
-    await admin_app.configure(
-        logo_url="https://preview.tabler.io/static/logo-white.svg",
-        template_folders=["templates"],
-        providers=[
-            CustomLoginProvider(
-                login_logo_url="https://preview.tabler.io/static/logo.svg",
-                admin_model=Admin,
-            )
-        ],
-        redis=redis1,
+# Configuration de l'application admin
+admin_app.configure(
+    logo_url="https://preview.tabler.io/static/logo-white.svg",
+    template_folders=["templates"],
+    providers=[
+        CustomLoginProvider(
+            login_logo_url="https://preview.tabler.io/static/logo.svg",
+            admin_model=Admin,
+        )
+    ],
+    redis=redis1,
+    # redis_url="redis://localhost:6379/0",
+)
+
+# Import des modèles admin
+from .models import (
+    PlatformAdmin,
+    ServiceAdmin,
+    ServiceTypeAdmin,
+    OrderAdmin,
+    PaymentAdmin,
+    SupportTicketAdmin,
+    AdminUserAdmin
+)
+
+# Enregistrement des modèles admin
+admin_app.register_model(PlatformAdmin)
+admin_app.register_model(ServiceAdmin)
+admin_app.register_model(ServiceTypeAdmin)
+admin_app.register_model(OrderAdmin)
+admin_app.register_model(PaymentAdmin)
+admin_app.register_model(SupportTicketAdmin)
+admin_app.register_model(AdminUserAdmin)
+
+# Liens personnalisés
+admin_app.register_link(
+    Link(
+        label="Dashboard",
+        icon="fas fa-tachometer-alt",
+        url="/admin/dashboard",
     )
+)
 
-    # Import et enregistrement des ressources admin
-    from models import (
-        PlatformAdmin,
-        ServiceAdmin,
-        ServiceTypeAdmin,
-        OrderAdmin,
-        PaymentAdmin,
-        SupportTicketAdmin,
-        AdminUserAdmin,
+admin_app.register_link(
+    Link(
+        label="Statistiques",
+        icon="fas fa-chart-bar",
+        url="/admin/stats",
     )
-
-    admin_app.register_model(PlatformAdmin)
-    admin_app.register_model(ServiceAdmin)
-    admin_app.register_model(ServiceTypeAdmin)
-    admin_app.register_model(OrderAdmin)
-    admin_app.register_model(PaymentAdmin)
-    admin_app.register_model(SupportTicketAdmin)
-    admin_app.register_model(AdminUserAdmin)
-
-    # Liens personnalisés
-    admin_app.register_link(Link(label="Dashboard", icon="fas fa-tachometer-alt", url="/admin/dashboard"))
-    admin_app.register_link(Link(label="Statistiques", icon="fas fa-chart-bar", url="/admin/stats"))
-
-    return admin_app
+) 
