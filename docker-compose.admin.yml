@@ -4,9 +4,9 @@ services:
   db:
     image: postgres:15
     environment:
-      POSTGRES_DB: socialboost_pro
+      POSTGRES_DB: railway
       POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: password
+      POSTGRES_PASSWORD: nUjgMltVbvvOCbKQJzKqckIWWqlOmyNW
     volumes:
       - postgres_data:/var/lib/postgresql/data
     ports:
@@ -32,9 +32,9 @@ services:
   api:
     build: .
     environment:
-      DATABASE_URL: postgresql://postgres:password@db:5432/socialboost_pro
+      DATABASE_URL: postgresql://postgres:nUjgMltVbvvOCbKQJzKqckIWWqlOmyNW@switchback.proxy.rlwy.net:55806/railway
       REDIS_URL: redis://redis:6379/0
-      SECRET_KEY: your-super-secret-key-change-in-production
+      SECRET_KEY: jgMltVbvvOCbKQJzKqckIWWqlOmyNW
       DEBUG: "true"
     ports:
       - "8000:8000"
