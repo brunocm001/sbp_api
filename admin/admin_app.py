@@ -1,4 +1,4 @@
-from fastapi_admin.factory import app as admin_app
+from fastapi_admin.app import app as admin_app
 from fastapi_admin.providers.login import UsernamePasswordProvider
 from fastapi_admin.resources import Link
 from fastapi_admin.models import AbstractAdmin
