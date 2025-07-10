@@ -4,10 +4,12 @@ from fastapi_admin.resources import Link
 from fastapi_admin.models import AbstractAdmin
 from fastapi_admin.file_upload import FileUpload
 from sqlalchemy.ext.asyncio import AsyncSession
+from redis import asyncio as aioredis
 from database import engine
 from models import Admin
 from utils.auth import verify_password
 from typing import Optional
+import os
 
 # Configuration de l'upload de fichiers
 file_upload = FileUpload(uploads_dir="static/uploads")
@@ -21,6 +23,10 @@ class CustomLoginProvider(UsernamePasswordProvider):
             if admin and verify_password(password, admin.password_hash):
                 return admin
         return None
+    
+# Crée une connexion Redis
+redis1 = aioredis.from_url(os.getenv("REDIS_URL", "redis://localhost:6379"), decode_responses=True)
+
 
 # Configuration de l'application admin
 admin_app.configure(
@@ -32,7 +38,8 @@ admin_app.configure(
             admin_model=Admin,
         )
     ],
-    redis_url="redis://localhost:6379/0",
+    redis=redis1,
+    # redis_url="redis://localhost:6379/0",
 )
 
 # Import des modèles admin
