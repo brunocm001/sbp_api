@@ -34,7 +34,7 @@ async def login_admin(
 async def register_admin(
     admin: AdminCreate,
     db: Session = Depends(get_db),
-    current_admin: Admin = Depends(get_current_admin)
+    #current_admin: Admin = Depends(get_current_admin)
 ):
     # Check if admin already exists
     existing_admin = db.query(Admin).filter(Admin.email == admin.email).first()
