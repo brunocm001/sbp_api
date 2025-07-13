@@ -1,6 +1,5 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.staticfiles import StaticFiles
 from database import engine, Base
 from routers import (
     platforms_router,
@@ -12,10 +11,6 @@ from routers import (
     admin_router
 )
 from config import settings
-
-# Import de l'admin
-from admin.config import configure_admin
-from admin.routes import router as admin_routes
 
 # Create database tables
 Base.metadata.create_all(bind=engine)
@@ -38,9 +33,6 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Mount static files
-app.mount("/static", StaticFiles(directory="static"), name="static")
-
 # Include routers
 app.include_router(admin_router)
 app.include_router(platforms_router)
@@ -50,21 +42,13 @@ app.include_router(orders_router)
 app.include_router(payments_router)
 app.include_router(support_router)
 
-# Include admin routes
-app.include_router(admin_routes)
-
-# Configure and mount admin app
-admin_app = configure_admin()
-app.mount("/admin", admin_app)
-
 @app.get("/")
 async def root():
     return {
         "message": "Bienvenue sur l'API SocialBoost Pro",
         "version": "1.0.0",
         "docs": "/docs",
-        "redoc": "/redoc",
-        "admin": "/admin"
+        "redoc": "/redoc"
     }
 
 @app.get("/health")
